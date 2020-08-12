@@ -15,5 +15,11 @@ all: ${OBJS}
 	/usr/bin/strip ${PROG}
 	/usr/bin/strip -R .comment ${PROG}
 
+asm: _start.o _syscall.o crt.o
+	/usr/bin/as -o echo.o echo.s
+	/usr/bin/ld -nopie -o ${PROG} ${OBJS}
+	/usr/bin/strip ${PROG}
+	/usr/bin/strip -R .comment ${PROG}
+
 clean:
 	rm -rf ${PROG} ${OBJS} ${PROG}.core ${PROG}~
