@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+	.text
+	.p2align 2
 	.globl	main
 main:
 	movq	%rdi, %r15	# Get argc from %rdi, put it in %r15
