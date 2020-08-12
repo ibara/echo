@@ -15,9 +15,9 @@ all: ${OBJS}
 	/usr/bin/strip ${PROG}
 	/usr/bin/strip -R .comment ${PROG}
 
-asm: _start.o _syscall.o crt.o
+asm: _start.o crt.o
 	/usr/bin/as -o echo.o echo.s
-	/usr/bin/ld -nostdlib -nopie -o ${PROG} ${OBJS}
+	/usr/bin/ld -nostdlib -nopie -o ${PROG} _start.o crt.o echo.o
 	/usr/bin/strip ${PROG}
 	/usr/bin/strip -R .bss ${PROG}
 	/usr/bin/strip -R .comment ${PROG}
