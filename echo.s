@@ -17,6 +17,7 @@
 	.text
 	.p2align 2
 	.globl	main
+	.type	main,@function
 main:
 	movq	%rdi, %r15	# Get argc from %rdi, put it in %r15
 	movq	%rsi, %r14	# Get argv from %rsi, put it in %r14
