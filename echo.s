@@ -24,10 +24,10 @@ main:
 loop:
 	decl	%r15d		# 47: for (i = 0; i < argc; i++) {
 	jz	done		# Rewritten as: while (--argc) {
+	addq	$8, %r14	# ++argv
 	movl	$4, %eax	# Set up write(2)
 	movl	$1, %edi	# First parameter is 1
-	movq	8(%r14), %rsi	# Second parameter is *argv
-	addq	$8, %r14	# ++argv
+	movq	(%r14), %rsi	# Second parameter is *argv
 	leaq	-1(%rsi), %rdx	# Get *argv[0]
 strlen:				# Note: strlen has been inlined
 	cmpb	$0, 1(%rdx)	# 36: while (*t != '\0')
