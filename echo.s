@@ -20,7 +20,6 @@
 main:
 	movq	%rdi, %r15	# Get argc from %rdi, put it in %r15
 	movq	%rsi, %r14	# Get argv from %rsi, put it in %r14
-	movq	%rsi, %r13	# A temporary memory location
 loop:
 	decl	%r15d		# 47: for (i = 0; i < argc; i++) {
 	jz	done		# Rewritten as: while (--argc) {
@@ -39,7 +38,7 @@ strlen:				# Note: strlen has been inlined
 	je	done		# Rewritten as: if (argc != 1)
 	movl	$4, %eax	# Set up write(2)
 	movl	$1, %edi	# First parameter is 1
-	movq	%r13, %rsi	# Set %rsi to temporary memory location
+	movq	%r14, %rsi	# Set %rsi back to beginning of *argv
 	movb	$32, (%rsi)	# Second parameter is " "
 	movl	$1, %edx	# Third parameter is 1
 	syscall			# 50: write(1, " ", 1);
@@ -47,7 +46,7 @@ strlen:				# Note: strlen has been inlined
 done:
 	movl	$4, %eax	# Set up write(2)
 	movl	$1, %edi	# First parameter is 1
-	movq	%r13, %rsi	# Set %rsi to temporary memory location
+	movq	%r14, %rsi	# Set %rsi back to beginning of *argv
 	movb	$10, (%rsi)	# Second parameter is "\n"
 	movl	$1, %edx	# Third parameter is 1
 	syscall			# 52: write(1, "\n", 1);
