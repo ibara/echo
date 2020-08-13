@@ -9,6 +9,10 @@ Read my
 [blog post](https://briancallahan.net/blog/20200808.html)
 about this codebase.
 
+There is also a
+[follow-up blog post](https://briancallahan.net/blog/20200812.html)
+about this codebase.
+
 Building
 --------
 Just run `make`.
