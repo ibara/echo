@@ -40,7 +40,7 @@ strlen:				# Note: strlen has been inlined
 	movl	$4, %eax	# Set up write(2)
 	movl	$1, %edi	# First parameter is 1
 	movq	%r13, %rsi	# Set %rsi to temporary memory location
-	movl	$32, (%rsi)	# Second parameter is " "
+	movb	$32, (%rsi)	# Second parameter is " "
 	movl	$1, %edx	# Third parameter is 1
 	syscall			# 50: write(1, " ", 1);
 	jmp	loop
@@ -48,7 +48,7 @@ done:
 	movl	$4, %eax	# Set up write(2)
 	movl	$1, %edi	# First parameter is 1
 	movq	%r13, %rsi	# Set %rsi to temporary memory location
-	movl	$10, (%rsi)	# Second parameter is "\n"
+	movb	$10, (%rsi)	# Second parameter is "\n"
 	movl	$1, %edx	# Third parameter is 1
 	syscall			# 52: write(1, "\n", 1);
 	xorl	%eax, %eax	# Return value is 0
