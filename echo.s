@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Brian Callahan <bcallah@openbsd.org>
+ * Copyright (c) 2020-2021 Brian Callahan <bcallah@openbsd.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -39,7 +39,6 @@ strlen:				# Note: strlen has been inlined
 	je	done		# Rewritten as: if (argc != 1)
 	movl	$4, %eax	# Set up write(2)
 	movl	$1, %edi	# First parameter is 1
-	movq	%r14, %rsi	# Set %rsi back to beginning of *argv
 	movb	$32, (%rsi)	# Second parameter is " "
 	movl	$1, %edx	# Third parameter is 1
 	syscall			# 50: write(1, " ", 1);
@@ -47,7 +46,6 @@ strlen:				# Note: strlen has been inlined
 done:
 	movl	$4, %eax	# Set up write(2)
 	movl	$1, %edi	# First parameter is 1
-	movq	%r14, %rsi	# Set %rsi back to beginning of *argv
 	movb	$10, (%rsi)	# Second parameter is "\n"
 	movl	$1, %edx	# Third parameter is 1
 	syscall			# 52: write(1, "\n", 1);
