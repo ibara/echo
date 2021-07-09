@@ -16,39 +16,38 @@
 
 	.text
 	.p2align 2
-	.globl	main
-	.type	main,@function
-main:
-	movq	%rdi, %r15	# Get argc from %rdi, put it in %r15
-	movq	%rsi, %r14	# Get argv from %rsi, put it in %r14
+	.globl	_start
+	.type	_start,@function
+_start:
+	popq	%rbp		# Put argc into %rbp (not %rdi)
+	pushq	$1
+	popq	%rdi		# Put 1 in %rdi for all write(2) calls
+	movl	%edi, %edx	# Put 1 in %rdx for all write(2) calls
+	pushq	$4
+	popq	%rbx		# Store write(2) syscall number
 loop:
-	decl	%r15d		# 47: for (i = 0; i < argc; i++) {
-	jz	done		# Rewritten as: while (--argc) {
-	addq	$8, %r14	# ++argv
-	movl	$4, %eax	# Set up write(2)
-	movl	$1, %edi	# First parameter is 1
-	movq	(%r14), %rsi	# Second parameter is *argv
-	leaq	-1(%rsi), %rdx	# Get *argv[0]
-strlen:				# Note: strlen has been inlined
-	cmpb	$0, 1(%rdx)	# 36: while (*t != '\0')
-	leaq	1(%rdx), %rdx	# 37: t++;
-	jne	strlen
-	subq	%rsi, %rdx	# 39: return t - s;
-	syscall			# 48: write(1, *argv, %rdx);
-	cmpl	$1, %r15d	# 49: if (i + 1 != argc)
-	je	done		# Rewritten as: if (argc != 1)
-	movl	$4, %eax	# Set up write(2)
-	movl	$1, %edi	# First parameter is 1
-	movb	$32, (%rsi)	# Second parameter is " "
-	movl	$1, %edx	# Third parameter is 1
-	syscall			# 50: write(1, " ", 1);
+	decl	%ebp		# while (--argc)
+	jz	done
+	addq	$8, %rsp	# ++argv
+	movq	(%rsp), %rsi	# Next parameter is the top of the stack
+printchar:
+	cmpb	$0, (%rsi)	# *argv == '\0' ?
+	je	space
+	movl	%ebx, %eax	# syscall clobbers %rax
+	syscall			# write(1, *argv, 1);
+	incq	%rsi		# Next character in string
+	jmp	printchar
+space:
+	cmpl	%edi, %ebp	# argc == 1 ?
+	je	done
+	movb	$32, (%rsi)
+	movl	%ebx, %eax
+	syscall			# write(1, " ", 1);
 	jmp	loop
 done:
-	movl	$4, %eax	# Set up write(2)
-	movl	$1, %edi	# First parameter is 1
-	movb	$10, (%rsi)	# Second parameter is "\n"
-	movl	$1, %edx	# Third parameter is 1
-	syscall			# 52: write(1, "\n", 1);
-	xorl	%eax, %eax	# Return value is 0
-	retq			# 54: return 0;
-	.size	main,.-main
+	movb	$10, (%rsi)
+	movl	%ebx, %eax
+	syscall			# write(1, "\n", 1);
+	xorl	%edi, %edi	# Return 0 (%rax already set to 1 via syscall)
+	syscall
+	.size	_start,.-_start
